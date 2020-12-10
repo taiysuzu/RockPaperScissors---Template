@@ -19,7 +19,7 @@ namespace RockPaperScissors
 {
     public partial class Form1 : Form
     {
-        string playerChoice, cpuChoice;
+        int playerChoice, cpuChoice;
         int wins = 0;
         int losses = 0;
         int ties = 0;
@@ -42,7 +42,6 @@ namespace RockPaperScissors
         Point cpuLocation = new Point(360, 70);
         Point outcomeLocation = new Point(225, 5);
 
-
         Graphics g;
 
         public Form1()
@@ -53,18 +52,71 @@ namespace RockPaperScissors
 
         private void rockButton_Click(object sender, EventArgs e)
         {
-            /// TODO Set the playerchoice value, draw the appropriate image,
-            /// play a sound, wait for a second; repeat for the computer turn 
+            playerChoice = 1;
+            g.DrawImage(rockImage, playerLocation);
+            ComputerTurn();
+            DetermineWinner();
         }
 
         private void paperButton_Click(object sender, EventArgs e)
         {
-
+            playerChoice = 2;
+            g.DrawImage(paperImage, playerLocation);
+            ComputerTurn();
+            DetermineWinner();
         }
 
         private void scissorsButton_Click(object sender, EventArgs e)
         {
+            playerChoice = 3;
+            g.DrawImage(scissorImage, playerLocation);
+            ComputerTurn();
+            DetermineWinner();
+        }
 
+        public void ComputerTurn()
+        {
+            jabPlayer.Play();
+            Thread.Sleep(choicePause);
+            cpuChoice = randGen.Next(1, 4);
+            if (cpuChoice == 1)
+            {
+                g.DrawImage(rockImage, cpuLocation);
+            }
+            else if (cpuChoice == 2)
+            {
+                g.DrawImage(paperImage, cpuLocation);
+            }
+            else if (cpuChoice == 3)
+            {
+                g.DrawImage(scissorImage, cpuLocation);
+            }
+        }
+
+        public void DetermineWinner()
+        {
+            if (playerChoice == cpuChoice)
+            {
+                ties++;
+                g.DrawImage(tieImage, outcomeLocation);
+            }
+            else if (cpuChoice - playerChoice == 1 || playerChoice - cpuChoice == 2)
+            {
+                losses++;
+                g.DrawImage(loseImage, outcomeLocation);
+            }
+            else if (playerChoice - cpuChoice == 1 || cpuChoice - playerChoice == 2)
+            {
+                wins++;
+                g.DrawImage(winImage, outcomeLocation);
+            }
+            winsLabel.Text = $"Wins: {wins}";
+            lossesLabel.Text = $"Losses: {losses}";
+            tiesLabel.Text = $"Ties: {ties}";
+            gongPlayer.Play();
+            Thread.Sleep(outcomePause);
+            g.Clear(Color.Transparent);
+            this.BackgroundImage = Properties.Resources.dojo700x390;
         }
     }
 }
